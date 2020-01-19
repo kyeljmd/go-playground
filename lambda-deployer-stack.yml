@@ -1,0 +1,114 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Creates a stack containing an IAM role used to grant Lambda Deployer Policies to build and deploy serverless applications
+
+Resources:
+  CodeBuildServiceRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: codebuild-service-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: "Allow"
+            Principal:
+              Service:
+                - "codebuild.amazonaws.com" 
+            Action: 
+              - "sts:AssumeRole"
+  ServerlessLambdaDeployerPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LambdaDeployerPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+        - Action:
+          - dynamodb:list*
+          - dynamodb:describe*
+          - codebuild:*
+          - ecr:BatchCheckLayerAvailability
+          - ecr:GetDownloadUrlForLayer
+          - ecr:BatchGetImage
+          - s3:GetObject
+          - s3:GetObjectVersion
+          - s3:PutObject
+          - s3:List*
+          - s3:CreateBucket
+          - s3:ListBucket
+          - s3:ListBucketVersion
+          - s3:GetBucketTagging
+          - s3:ListAllMyBuckets
+          - s3:GetBucketACL
+          - s3:GetBucketLocation
+          - lambda:AddPermission
+          - lambda:CreateAlias
+          - lambda:CreateEventSourceMapping
+          - lambda:CreateFunction
+          - lambda:DeleteAlias
+          - lambda:DeleteEventSourceMapping
+          - lambda:DeleteFunction
+          - lambda:Get*
+          - lambda:List*
+          - lambda:PublishVersion
+          - lambda:RemovePermission
+          - lambda:TagResource
+          - lambda:UntagResource
+          - lambda:Update*
+          - logs:Get*
+          - logs:Describe*
+          - logs:GetLogEvents
+          - logs:FilterLogEvents
+          - logs:TestMetricFilter
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          - logs:DescribeLogGroups
+          - rds:Describe*
+          - rds:List*
+          - ses:Get*
+          - sns:List*
+          - sns:Publish
+          - sqs:GetQueueAttributes
+          - sqs:ListQueues
+          - sqs:ReceiveMessage
+          - cloudformation:Describe*
+          - cloudformation:List*
+          - cloudformation:Get*
+          - cloudformation:CreateStack
+          - cloudformation:DescribeChangeSet
+          - cloudformation:DescribeStackEvents
+          - cloudformation:DescribeStackResource*
+          - cloudformation:DescribeStacks
+          - cloudformation:ExecuteChangeSet
+          - cloudformation:GetStackPolicy
+          - cloudformation:GetTemplate
+          - cloudformation:ListChangeSets
+          - cloudformation:ListStackResources
+          - cloudformation:UpdateStack
+          - cloudformation:ValidateTemplate
+          - cloudformation:CancelUpdateStack
+          - cloudformation:ContinueUpdateRollback
+          - iam:AttachRolePolicy
+          - iam:AttachGroupPolicy
+          - iam:CreatePolicy
+          - iam:ListAttachedGroupPolicies
+          - iam:ListAttachedUserPolicies
+          - iam:ListGroups
+          - iam:ListUsers
+          - iam:CreateRole
+          - iam:DetachRolePolicy
+          - iam:GetPolicy
+          - iam:GetRole
+          - iam:ListAttachedRolePolicies
+          - iam:ListPolicies
+          - iam:ListRolePolicies
+          - iam:ListRoles
+          - iam:PutRolePolicy
+          - iam:UpdateRole
+          - iam:PassRole
+          Effect: Allow
+          Resource: "*"
+      Roles: [!Ref CodeBuildServiceRole]
